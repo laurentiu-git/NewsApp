@@ -6,7 +6,7 @@ import com.example.assignment.model.Result
 
 @Database(
     entities = [Result::class],
-    version = 8
+    version = 9
 )
 
 @TypeConverters(Converters::class)
