@@ -2,6 +2,7 @@ package com.example.assignment.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 @Entity(
@@ -9,6 +10,7 @@ import java.io.Serializable
 )
 data class Result(
         @PrimaryKey(autoGenerate = true) var primaryKey: Int?=null,
+        @SerializedName("abstract") var desciption: String,
         var adx_keywords: String,
         var asset_id: Long,
         var byline: String,
