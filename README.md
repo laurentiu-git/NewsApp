@@ -5,7 +5,9 @@
 
 • Offline storage
 
-• Android Jetpack 
+• Android Jetpack
+
+• Coroutines
 
 
 
