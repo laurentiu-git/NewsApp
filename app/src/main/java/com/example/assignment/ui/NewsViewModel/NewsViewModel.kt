@@ -25,6 +25,8 @@ class NewsViewModel(
 ): AndroidViewModel(app) {
 
     val news: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
+    var newsPage = 1
+    var newsResponse: NewsResponse? = null
 
     init {
         getNews()
@@ -36,8 +38,17 @@ class NewsViewModel(
 
     private fun handleNewsResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
         if(response.isSuccessful) {
-            response.body()?.let { resultResponse->
-                return Resource.Success(resultResponse)
+            response.body()?.let { resultResponse ->
+                newsPage += 6
+                if(newsResponse == null) {
+                    newsResponse = resultResponse
+                }
+                else {
+                    val oldNews = newsResponse?.results
+                    val newNews = resultResponse.results
+                    oldNews?.addAll(newNews)
+                }
+                return Resource.Success(newsResponse?: resultResponse)
             }
         }
         return Resource.Error(response.message())
@@ -57,7 +68,7 @@ class NewsViewModel(
         news.postValue(Resource.Loading())
         try {
             if(hasInternetConnection()) {
-                val response = newsRepository.getNews()
+                val response = newsRepository.getNews(newsPage)
                 news.postValue(handleNewsResponse(response))
             } else {
                 news.postValue(Resource.Error("No interrnet connection"))
