@@ -1,8 +1,8 @@
 package com.example.assignment.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
-import com.example.assignment.model.*
+import androidx.room.* //ktlint-disable
+import com.example.assignment.model.* //ktlint-disable
 @Dao
 interface ResultDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

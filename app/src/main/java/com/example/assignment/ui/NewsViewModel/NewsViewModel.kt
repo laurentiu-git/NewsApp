@@ -3,12 +3,11 @@ package com.example.assignment.ui.NewsViewModel
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.ConnectivityManager.*
-import android.net.NetworkCapabilities.*
+import android.net.ConnectivityManager.* //ktlint-disable
+import android.net.NetworkCapabilities.* //ktlint-disable
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignment.NewsApplication
 import com.example.assignment.model.NewsResponse
@@ -20,9 +19,9 @@ import retrofit2.Response
 import java.io.IOException
 
 class NewsViewModel(
-        app: Application,
+    app: Application,
     val newsRepository: NewsRepository
-): AndroidViewModel(app) {
+) : AndroidViewModel(app) {
 
     val news: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
     var newsPage = 1
@@ -37,18 +36,23 @@ class NewsViewModel(
     }
 
     private fun handleNewsResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
-        if(response.isSuccessful) {
+        if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
                 newsPage += 6
-                if(newsResponse == null) {
-                    newsResponse = resultResponse
+                //terrible example, but necessary for pagination
+                newsPage = if (newsPage == 7) {
+                    30
+                } else {
+                    1
                 }
-                else {
+                if (newsResponse == null) {
+                    newsResponse = resultResponse
+                } else {
                     val oldNews = newsResponse?.results
                     val newNews = resultResponse.results
                     oldNews?.addAll(newNews)
                 }
-                return Resource.Success(newsResponse?: resultResponse)
+                return Resource.Success(newsResponse ?: resultResponse)
             }
         }
         return Resource.Error(response.message())
@@ -64,48 +68,47 @@ class NewsViewModel(
         newsRepository.deleteNews(result)
     }
 
-    private suspend fun  safeNewsCall() {
+    private suspend fun safeNewsCall() {
         news.postValue(Resource.Loading())
         try {
-            if(hasInternetConnection()) {
+            if (hasInternetConnection()) {
                 val response = newsRepository.getNews(newsPage)
                 news.postValue(handleNewsResponse(response))
             } else {
                 news.postValue(Resource.Error("No interrnet connection"))
             }
         } catch (t: Throwable) {
-            when(t) {
+            when (t) {
                 is IOException -> news.postValue(Resource.Error("Network failure"))
                 else -> news.postValue(Resource.Error("Conversion Error"))
             }
         }
     }
 
-    private fun hasInternetConnection(): Boolean{
+    private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<NewsApplication>().getSystemService(
-                Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val activeNetwork = connectivityManager.activeNetwork ?: return false
-                val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val activeNetwork = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
 
-                return when {
-                    capabilities.hasTransport(TRANSPORT_WIFI) ->true
-                    capabilities.hasTransport(TRANSPORT_CELLULAR) ->true
-                    capabilities.hasTransport(TRANSPORT_ETHERNET) ->true
+            return when {
+                capabilities.hasTransport(TRANSPORT_WIFI) -> true
+                capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
+                capabilities.hasTransport(TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            connectivityManager.activeNetworkInfo?.run {
+                return when (type) {
+                    TYPE_WIFI -> true
+                    TYPE_MOBILE -> true
+                    TYPE_ETHERNET -> true
                     else -> false
                 }
-            } else {
-                connectivityManager.activeNetworkInfo?.run {
-                    return when(type) {
-                        TYPE_WIFI -> true
-                        TYPE_MOBILE -> true
-                        TYPE_ETHERNET -> true
-                        else ->false
-                    }
-                }
             }
+        }
         return false
-
     }
-
 }

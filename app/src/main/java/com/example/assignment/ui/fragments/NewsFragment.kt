@@ -17,9 +17,9 @@ import com.example.assignment.util.Constants.Companion.QUERY_PAGE_SIZE
 import com.example.assignment.util.Resource
 import kotlinx.android.synthetic.main.fragment_news.*
 
-class NewsFragment: Fragment(R.layout.fragment_news) {
+class NewsFragment : Fragment(R.layout.fragment_news) {
 
-    lateinit var  viewModel: NewsViewModel
+    lateinit var viewModel: NewsViewModel
     lateinit var newsAdapter: NewsAdapater
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,31 +32,35 @@ class NewsFragment: Fragment(R.layout.fragment_news) {
                 putSerializable("result", it)
             }
             findNavController().navigate(
-                R.id.action_newsFragment_to_articleFragment, bundle
+                R.id.action_newsFragment_to_articleFragment,
+                bundle
             )
         }
 
-        viewModel.news.observe(viewLifecycleOwner, Observer { response->
-            when(response) {
-                is Resource.Success -> {
-                    hideProgressBar()
-                    response.data?.let{newsResponse ->
-                        newsAdapter.differ.submitList(newsResponse.results.toList())
-                        val totalPages = newsResponse.num_results / QUERY_PAGE_SIZE +2
-                        isLastPage = viewModel.newsPage == totalPages
+        viewModel.news.observe(
+            viewLifecycleOwner,
+            Observer { response ->
+                when (response) {
+                    is Resource.Success -> {
+                        hideProgressBar()
+                        response.data?.let { newsResponse ->
+                            newsAdapter.differ.submitList(newsResponse.results.toList())
+                            val totalPages = newsResponse.num_results / QUERY_PAGE_SIZE + 2
+                            isLastPage = viewModel.newsPage == totalPages
+                        }
                     }
-                }
-                is Resource.Loading -> {
-                    showProgressBar()
-                }
-                is Resource.Error -> {
-                    hideProgressBar()
-                    response.message?.let {messagge->
-                        Toast.makeText(activity, "Error $messagge",Toast.LENGTH_SHORT).show()
+                    is Resource.Loading -> {
+                        showProgressBar()
+                    }
+                    is Resource.Error -> {
+                        hideProgressBar()
+                        response.message?.let { messagge ->
+                            Toast.makeText(activity, "Error $messagge", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-        })
+        )
     }
 
     private fun hideProgressBar() {
@@ -93,21 +97,18 @@ class NewsFragment: Fragment(R.layout.fragment_news) {
             val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
             val isNotAtBeginning = firstVisibleItemPosition >= 0
             val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
-            val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning
-                    && isTotalMoreThanVisible && isScrolling
-            if(shouldPaginate) {
+            val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                isTotalMoreThanVisible && isScrolling
+            if (shouldPaginate) {
                 viewModel.getNews()
                 isScrolling = false
             }
-
-
         }
     }
 
-
     private fun setupRecyclerView() {
         newsAdapter = NewsAdapater()
-        rvBreakingNews.apply{
+        rvBreakingNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
             addOnScrollListener(this@NewsFragment.scrollListener)

@@ -1,7 +1,7 @@
 package com.example.assignment.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
         val viewModelProviderFactory = NewsViewModelProviderFactory(application, newsRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(NewsViewModel::class.java)
 
-    bottomNavigationView.setupWithNavController(newsNavHostFragment.findNavController())
-
-
+        bottomNavigationView.setupWithNavController(newsNavHostFragment.findNavController())
     }
 }

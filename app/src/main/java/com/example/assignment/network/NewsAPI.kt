@@ -9,12 +9,11 @@ import retrofit2.http.Query
 
 interface NewsAPI {
 
-
     @GET("svc/mostpopular/v2/viewed/{days}.json")
     suspend fun getNews(
-            @Path("days")
-            pageNumber: Int = 1,
-            @Query("api-key")
-            APIKEY: String = Constants.APIKEY
+        @Path("days")
+        pageNumber: Int = 1,
+        @Query("api-key")
+        APIKEY: String = Constants.APIKEY
     ): Response<NewsResponse>
 }

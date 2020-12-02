@@ -3,8 +3,6 @@ package com.example.assignment.db
 import androidx.room.TypeConverter
 import com.example.assignment.model.Media
 import com.example.assignment.model.MediaMetadata
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class Converters {
     @TypeConverter
@@ -14,7 +12,7 @@ class Converters {
 
     @TypeConverter
     fun toMedia(url: String): MutableList<Media> {
-        return mutableListOf(Media(1,"","",toMediaMetadata(url),"",""))
+        return mutableListOf(Media(1, "", "", toMediaMetadata(url), "", ""))
     }
 
     @TypeConverter
@@ -24,7 +22,6 @@ class Converters {
 
     @TypeConverter
     fun toMediaMetadata(url: String): MutableList<MediaMetadata> {
-        return mutableListOf(MediaMetadata("",1,url,1))
+        return mutableListOf(MediaMetadata("", 1, url, 1))
     }
-
 }

@@ -9,21 +9,21 @@ import java.io.Serializable
     tableName = "results"
 )
 data class Result(
-        @PrimaryKey(autoGenerate = true) var primaryKey: Int?=null,
-        @SerializedName("abstract") var desciption: String,
-        var adx_keywords: String,
-        var asset_id: Long,
-        var byline: String,
-        var eta_id: Int,
-        var media: MutableList<Media>,
-        var nytdsection: String,
-        var published_date: String,
-        var section: String,
-        var source: String,
-        var subsection: String,
-        var title: String,
-        var type: String,
-        var updated: String,
-        var uri: String,
-        var url: String
-): Serializable
+    @PrimaryKey(autoGenerate = true) var primaryKey: Int? = null,
+    @SerializedName("abstract") var desciption: String,
+    var adx_keywords: String,
+    var asset_id: Long,
+    var byline: String,
+    var eta_id: Int,
+    var media: MutableList<Media>,
+    var nytdsection: String,
+    var published_date: String,
+    var section: String,
+    var source: String,
+    var subsection: String,
+    var title: String,
+    var type: String,
+    var updated: String,
+    var uri: String,
+    var url: String
+) : Serializable

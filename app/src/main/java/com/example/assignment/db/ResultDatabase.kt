@@ -1,7 +1,7 @@
 package com.example.assignment.db
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.* //ktlint-disable
 import com.example.assignment.model.Result
 
 @Database(
@@ -10,24 +10,25 @@ import com.example.assignment.model.Result
 )
 
 @TypeConverters(Converters::class)
-abstract class ResultDatabase: RoomDatabase() {
+abstract class ResultDatabase : RoomDatabase() {
 
-    abstract  fun  getResultDao(): ResultDao
+    abstract fun getResultDao(): ResultDao
 
     companion object {
         @Volatile
         private var instance: ResultDatabase? = null
         private val LOCK = Any()
 
-        operator  fun invoke(context: Context) = instance ?: synchronized(LOCK) {
-            instance ?: createDatabase(context).also{instance = it}
+        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
+            instance ?: createDatabase(context).also { instance = it }
         }
 
         private fun createDatabase(context: Context) =
-        Room.databaseBuilder(context,
-        ResultDatabase::class.java,
-        "resultdb.db"
-        ).build()
-
+            Room.databaseBuilder(
+                context,
+                ResultDatabase::class.java,
+                "resultdb.db"
+            )
+                .build()
     }
 }
