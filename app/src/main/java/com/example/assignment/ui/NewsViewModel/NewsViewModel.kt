@@ -39,7 +39,7 @@ class NewsViewModel(
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
                 newsPage += 6
-                // terrible example, but necessary for pagination
+                //terrible example, but necessary for pagination
                 newsPage = if (newsPage == 7) {
                     30
                 } else {
